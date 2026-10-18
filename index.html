@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#101825">
+<title>간단한 너만의 기사 소환 | CYOA</title>
+<style>
+:root{color-scheme:dark;--bg:#101825;--panel:#1b2839;--panel2:#25364b;--gold:#e8c787;--ink:#f3f1eb;--muted:#b7bec9;--line:#415268;--red:#e99b9b}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#253e59,transparent 55%),var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;line-height:1.6}.wrap{max-width:1080px;margin:0 auto;padding:26px 16px 70px}.hero{padding:40px 24px;border:1px solid #67738a;border-radius:18px;background:linear-gradient(140deg,#28374b,#161e2b);text-align:center;box-shadow:0 20px 45px #0005}.overline{color:var(--gold);letter-spacing:.22em;font-size:.78rem}h1{font-size:clamp(1.8rem,5vw,3.3rem);margin:8px 0 18px;color:#f7e5bb}p{margin:8px 0}.story{max-width:680px;margin:0 auto;color:#e5e7ee}.story strong{color:var(--gold)}.counter{position:sticky;top:0;z-index:10;padding:13px 16px;margin:18px 0 24px;border:1px solid #6a7890;border-radius:14px;background:#172436f2;backdrop-filter:blur(10px);display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}.counter b{font-size:1.5rem;color:var(--gold)}.bar{width:100%;height:7px;background:#3d4351;border-radius:999px;overflow:hidden}.bar>div{height:100%;background:linear-gradient(90deg,#7e9ec3,var(--gold));transition:width .15s}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.stat{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:18px}.stat h2{font-size:1.16rem;margin:0 0 12px;display:flex;justify-content:space-between;gap:8px;align-items:center}.chosen{font-size:.82rem;color:var(--gold);text-align:right}.options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.option{min-height:72px;background:var(--panel2);border:1px solid #52627a;border-radius:10px;color:var(--ink);cursor:pointer;padding:8px 3px;font:inherit;line-height:1.32;word-break:keep-all}.option small{display:block;color:#bac7d5;font-size:.72rem;margin-bottom:5px}.option.selected{border:2px solid var(--gold);background:#4b4638;color:#fff0ca}.option:disabled{opacity:.34;cursor:not-allowed}.option:focus-visible,.action:focus-visible{outline:3px solid #a5d8ff;outline-offset:2px}.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:26px 0}.action{background:#374a62;color:white;border:1px solid #90a0b9;padding:12px 18px;border-radius:10px;font:inherit;cursor:pointer}.action.primary{background:#8a6a37;color:white;border-color:#ddbd7d}.summary{padding:22px;border:1px solid #a58a5a;border-radius:14px;background:#1c2839}.summary h2{margin:0 0 8px;color:var(--gold)}.summary pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;font-size:.93rem}.note{color:var(--muted);font-size:.85rem}.message{min-height:1.5em;color:var(--gold);text-align:center}footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:24px}@media(max-width:700px){.grid{grid-template-columns:1fr}.hero{padding:32px 18px}.stat{padding:14px}.counter{top:0}.options{gap:6px}.option{font-size:.9rem;min-height:66px}.wrap{padding:12px 12px 55px}}
+</style>
+</head>
+<body><main class="wrap">
+<header class="hero"><div class="overline">STATIC CYOA · SUMMONING</div><h1>간단한 너만의 기사 소환</h1><div class="story"><p>자, 당신은 인터넷을 보며 흥미로운 오컬트 주문을 발견했습니다.</p><p>재미 삼아 아파트 주차장에서 소환해 보았는데…</p><p>당신에게는 나름 소환의 재능이 있었고, 그 주문은 사실이었습니다.</p><p><strong>자, 당신이 소환한 기사님은 어떤 분인가요?</strong></p></div></header>
+<section class="counter" aria-live="polite"><div>남은 마력 <b id="remaining">50</b> / 50 MP</div><div id="spent">사용 0 MP</div><div class="bar" role="progressbar" aria-label="사용한 마력" aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" id="progress"><div id="fill" style="width:0%"></div></div></section>
+<div class="grid" id="stats"></div>
+<div class="actions"><button type="button" class="action primary" id="copy">기사 설정 복사</button><button type="button" class="action" id="download">기사 설정 TXT 저장</button><button type="button" class="action" id="reset">전부 초기화</button></div>
+<div class="message" id="message" role="status"></div>
+<section class="summary"><h2>소환된 기사 기록</h2><p class="note">각 능력치는 0~5마력 중 반드시 한 단계로 설정됩니다. 0마력도 하나의 유효한 선택지입니다.</p><pre id="summary"></pre></section><footer>간단한 너만의 기사 소환 · 팬메이드 스태틱 CYOA</footer>
+</main><script>
+const DATA=[
+['맷집','허약','일반인','기사평균','탱커','철벽','난공불락'],
+['지구력','저질','일반인','기사평균','몽크','황소','철인'],
+['근력','종이인형','일반인','기사평균','바바리안','불곰','헤라클레스'],
+['민첩','나무늘보','일반인','기사평균','도적','바람','위타천'],
+['정신력','멘헤라','일반인','기사평균','영웅','용사','백절불굴'],
+['은밀','관종','일반인','기사평균','암살자','유동','체셔캣'],
+['검술','허접','일반인','기사평균','검사','소드마스터','검성'],
+['전투센스','허당','일반인','기사평균','용병','임기응변','홍익인간'],
+['눈치','너드','일반인','기사평균','바드','골든리트리버','선경지명'],
+['장비','부실','일반','비범','명품','불세출','신화'],
+['지능','바보','일반인','기사평균','전략가','천수','초신성'],
+['생활기술','도련님','일반인','기사평균','가사도우미','생활력 갑','다재다능'],
+['외모','흉측','일반인','훤칠한','훌륭한','미인','경국지색'],
+['충성도','금쪽이','비즈니스','기사도','성기사','충직한 검','오수의 개']
+];
+const MAX=50;let selection=Array(DATA.length).fill(0);
+const root=document.getElementById('stats');
+DATA.forEach((row,i)=>{const article=document.createElement('section');article.className='stat';const title=document.createElement('h2');title.textContent=row[0];const chosen=document.createElement('span');chosen.className='chosen';chosen.id='chosen-'+i;title.append(chosen);article.append(title);const options=document.createElement('div');options.className='options';row.slice(1).forEach((label,cost)=>{const btn=document.createElement('button');btn.type='button';btn.className='option';btn.dataset.index=i;btn.dataset.cost=cost;const costText=document.createElement('small');costText.textContent=cost+' MP';btn.append(costText,document.createTextNode(label));btn.addEventListener('click',()=>select(i,cost));options.append(btn)});article.append(options);root.append(article)});
+function used(){return selection.reduce((a,b)=>a+b,0)}
+function select(i,cost){if(used()-selection[i]+cost>MAX)return;selection[i]=cost;render()}
+function result(){return ['간단한 너만의 기사 소환','사용 마력: '+used()+' / '+MAX+' MP','남은 마력: '+(MAX-used())+' MP','',...DATA.map((row,i)=>row[0]+': '+row[selection[i]+1]+' ('+selection[i]+' MP)')].join('\n')}
+function render(){const left=MAX-used();document.getElementById('remaining').textContent=left;document.getElementById('spent').textContent='사용 '+used()+' MP';document.getElementById('fill').style.width=used()/MAX*100+'%';document.getElementById('progress').setAttribute('aria-valuenow',used());DATA.forEach((row,i)=>{document.getElementById('chosen-'+i).textContent=row[selection[i]+1];root.querySelectorAll('[data-index="'+i+'"]').forEach(btn=>{const cost=Number(btn.dataset.cost);const active=cost===selection[i];btn.classList.toggle('selected',active);btn.setAttribute('aria-pressed',active?'true':'false');btn.disabled=!active&&cost>left+selection[i]})});document.getElementById('summary').textContent=result()}
+function notify(msg){document.getElementById('message').textContent=msg}
+document.getElementById('reset').addEventListener('click',()=>{selection.fill(0);render();notify('초기화되었습니다.')});
+document.getElementById('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(result());notify('기사 설정을 복사했습니다.')}catch(e){const t=document.createElement('textarea');t.value=result();document.body.append(t);t.select();const ok=document.execCommand('copy');t.remove();notify(ok?'기사 설정을 복사했습니다.':'복사가 차단되었습니다. 아래 결과를 직접 선택해 복사해 주세요.')}});
+document.getElementById('download').addEventListener('click',()=>{const blob=new Blob(['\ufeff'+result()],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='나의_기사_설정.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);notify('설정 파일을 저장했습니다.')});
+render();
+</script></body></html>
